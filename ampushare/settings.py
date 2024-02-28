@@ -33,6 +33,7 @@ SECRET_KEY = env('DJANGO_SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    '0.0.0.0',
     '127.0.0.1',
     'localhost'
 ]
@@ -48,7 +49,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
-    'core'
+    "booking.apps.BookingConfig",
+    "social.apps.SocialConfig",
+    "user.apps.UserConfig"
 ]
 
 MIDDLEWARE = [
@@ -147,5 +150,8 @@ REST_FRAMEWORK = {
     'COERCE_DECIMAL_TO_STRING': False,
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
 }
