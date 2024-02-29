@@ -11,7 +11,7 @@ class Profile(models.Model):
     last_name = models.CharField(max_length=100)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField()
-    profile_pic = models.ImageField(upload_to='images/')
+    profile_pic = models.ImageField(upload_to='media/images/')
     date_of_birth = models.DateField()
     gender = models.CharField(max_length=1)
     is_active = models.BooleanField(default=False)

@@ -4,7 +4,7 @@ from django.db import models
 class Doctor(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='images/')
+    image = models.ImageField(upload_to='media/images/')
     email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=15, unique=True)
     speciality = models.CharField(max_length=100)
