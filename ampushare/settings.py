@@ -136,6 +136,8 @@ USE_I18N = True
 
 USE_TZ = True
 
+APPEND_SLASH = True
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
@@ -155,3 +157,6 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
 }
+
+
+AUTH_USER_MODEL = 'user.User'

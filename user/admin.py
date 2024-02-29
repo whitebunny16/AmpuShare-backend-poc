@@ -1,3 +1,19 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-# Register your models here.
+from . import models
+
+
+@admin.register(models.User)
+class UserAdmin(BaseUserAdmin):
+    pass
+
+
+@admin.register(models.Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(models.Follow)
+class FollowAdmin(admin.ModelAdmin):
+    pass
