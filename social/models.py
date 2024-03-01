@@ -12,8 +12,8 @@ class Post(models.Model):
     ]
     caption = models.TextField()
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    video = models.FileField(upload_to='media/videos/', null=True, blank=True)
-    image = models.ImageField(upload_to='media/images/', null=True, blank=True)
+    video = models.FileField(upload_to='videos/', null=True, blank=True)
+    image = models.ImageField(upload_to='images/', null=True, blank=True)
     type = models.CharField(max_length=1, choices=POST_CHOICES, default=REGULAR_POST)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

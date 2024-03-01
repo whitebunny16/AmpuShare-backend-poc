@@ -9,12 +9,15 @@ class User(AbstractUser):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField()
-    profile_pic = models.ImageField(upload_to='media/images/')
+    profile_pic = models.ImageField(upload_to='images/')
     date_of_birth = models.DateField()
     gender = models.CharField(max_length=1)
     phone_number = models.CharField(max_length=15, unique=True, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f'{self.user.first_name} {self.user.last_name} - {self.user.username}'
 
 
 class Follow(models.Model):
