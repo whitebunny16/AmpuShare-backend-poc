@@ -3,6 +3,15 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    path('post-detail', get_post_detail),
-    path('create-post', create_post),
+    # Post
+    path('posts', posts),
+    path('posts/<str:post_id>', post_detail),
+
+    # Like
+    path('post/<str:post_id>/like/', like_post),
+    path('post/<str:post_id>/like/', unlike_post),
+
+    # Comment
+    path('post/<str:post_id>/comment/', add_comment),
+    path('post/<str:post_id>/comment/', delete_comment),
 ]

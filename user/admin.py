@@ -14,6 +14,6 @@ class ProfileAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(models.Follow)
+@admin.register(models.Buddy)
 class FollowAdmin(admin.ModelAdmin):
     pass

@@ -3,6 +3,15 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    path('booking-detail', get_booking_detail),
-    path('create-booking', create_booking),
+    # Doctor
+    path('doctors/', doctors),
+    path('doctors/<str:doctor_id>', doctor_detail),
+
+    # Appointment
+    path('appointments/', appointments),
+    path('appointments/<str:appointment_id>', appointment_detail),
+
+    # Payment
+    path('payments/', make_payment),
+    path('payments/<str:payment_id>', payment_detail),
 ]
