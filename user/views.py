@@ -63,7 +63,7 @@ def password_reset(request):
     """
     serializer = PasswordResetSerializer(data=request.data)
     if serializer.is_valid():
-        # Code to send reset password email
+        # Django Mail + pyOTP
         return Response({"message": "Password reset email sent."}, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -78,21 +78,20 @@ def password_reset_confirm(request):
     """
     serializer = PasswordResetConfirmSerializer(data=request.data)
     if serializer.is_valid():
-        # Code to reset password
         return Response({"message": "Password reset successful."}, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
-def user_profile(request, user_id):
+def user_profile(request, username):
     """
     User profile
     :param request:
-    :param user_id:
+    :param username:
     :return:
     """
-    user_profile = get_object_or_404(Profile, user=user_id)
-    serializer = ProfileSerializer(user_profile)
+    usr_profile = get_object_or_404(Profile, user__username=username)
+    serializer = ProfileSerializer(usr_profile)
     return Response(serializer.data)
 
 

@@ -36,9 +36,14 @@ class UserLoginSerializer(serializers.Serializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(source='user.email', read_only=True)
+    username = serializers.CharField(source='user.username', read_only=True)
+    first_name = serializers.CharField(source='user.first_name', read_only=True)
+    last_name = serializers.CharField(source='user.last_name', read_only=True)
+
     class Meta:
         model = Profile
-        fields = ['bio', 'profile_pic', 'date_of_birth', 'gender', 'phone_number', 'created_at', 'updated_at']
+        fields = ['first_name', 'last_name', 'email', 'username', 'bio', 'profile_pic', 'date_of_birth', 'gender', 'phone_number', 'created_at', 'updated_at']
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
