@@ -36,6 +36,7 @@ class UserLoginSerializer(serializers.Serializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField(source='user.id', read_only=True)
     email = serializers.EmailField(source='user.email', read_only=True)
     username = serializers.CharField(source='user.username', read_only=True)
     first_name = serializers.CharField(source='user.first_name', read_only=True)
@@ -43,7 +44,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['first_name', 'last_name', 'email', 'username', 'bio', 'profile_pic', 'date_of_birth', 'gender', 'phone_number', 'created_at', 'updated_at']
+        fields = ['user_id', 'first_name', 'last_name', 'email', 'username', 'bio', 'profile_pic', 'date_of_birth', 'gender', 'phone_number', 'created_at', 'updated_at']
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):

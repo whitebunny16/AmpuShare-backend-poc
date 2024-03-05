@@ -8,10 +8,10 @@ urlpatterns = [
     path('posts/<str:post_id>', post_detail),
 
     # Like
-    path('post/<str:post_id>/like/', like_post),
-    path('post/<str:post_id>/like/', unlike_post),
+    path('posts/<str:post_id>/like', like_post),
+    path('posts/<str:post_id>/like', unlike_post),
 
     # Comment
-    path('post/<str:post_id>/comment/', add_comment),
-    path('post/<str:post_id>/comment/', delete_comment),
+    path('posts/<str:post_id>/comment', add_comment),
+    path('posts/<str:post_id>/comment', delete_comment),
 ]
