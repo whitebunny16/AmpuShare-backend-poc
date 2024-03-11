@@ -10,6 +10,7 @@ class Profile(models.Model):
     GENDER_MALE = "M"
     GENDER_FEMALE = "F"
     GENDER_OTHER = "O"
+
     GENDER_CHOICE = [
         (GENDER_MALE, "Male"),
         (GENDER_FEMALE, "Female"),
