@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'debug_toolbar',
+    'rest_framework_swagger',
+    'drf_yasg',
     "booking.apps.BookingConfig",
     "social.apps.SocialConfig",
     "user.apps.UserConfig"
