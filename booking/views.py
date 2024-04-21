@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -11,29 +12,47 @@ Doctor View
 """
 
 
-@api_view(['GET'])
+@extend_schema(
+    request=DoctorSerializer,
+    methods=["POST"]
+)
+@api_view(['GET', 'POST'])
 def doctors(request):
     """
-    List all doctors
+    List all doctors or create a new doctor
     :param request:
     :return:
     """
-    doctors = Doctor.objects.all()
-    serializer = DoctorSerializer(doctors, many=True)
-    return Response(serializer.data)
+    if request.method == 'GET':
+        doctors = Doctor.objects.all()
+        serializer = DoctorSerializer(doctors, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        serializer = DoctorSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET'])
+@api_view(['GET', 'DELETE'])
 def doctor_detail(request, doctor_id):
     """
-    Retrieve a single doctor
+    Retrieve, update or delete a doctor
     :param request:
     :param doctor_id:
     :return:
     """
     doctor = get_object_or_404(Doctor, id=doctor_id)
-    serializer = DoctorSerializer(doctor)
-    return Response(serializer.data)
+
+    if request.method == 'GET':
+        serializer = DoctorSerializer(doctor)
+        return Response(serializer.data)
+
+    elif request.method == 'DELETE':
+        doctor.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 """
@@ -41,6 +60,10 @@ Appointment View
 """
 
 
+@extend_schema(
+    request=AppointmentSerializer,
+    methods=["POST"]
+)
 @api_view(['POST', 'GET'])
 def appointments(request):
     """
@@ -61,6 +84,10 @@ def appointments(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(
+    request=AppointmentSerializer,
+    methods=["PUT"]
+)
 @api_view(['GET', 'PUT', 'DELETE'])
 def appointment_detail(request, appointment_id):
     """
@@ -95,6 +122,10 @@ Payment View
 """
 
 
+@extend_schema(
+    request=PaymentSerializer,
+    methods=["POST"]
+)
 @api_view(['POST'])
 def make_payment(request):
     """
