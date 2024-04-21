@@ -1,15 +1,20 @@
 from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 
-from .models import Profile, Buddy
+from .models import Profile, Buddy, User
 from .serializers import UserLoginSerializer, ProfileSerializer, UserRegistrationSerializer, PasswordResetSerializer, \
     PasswordResetConfirmSerializer, BuddySerializer
 
 
+@extend_schema(
+    request=UserLoginSerializer,
+    methods=["POST"]
+)
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def user_login(request):
@@ -38,6 +43,10 @@ def user_login(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(
+    request=UserRegistrationSerializer,
+    methods=["POST"]
+)
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def user_register(request):
@@ -53,6 +62,10 @@ def user_register(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(
+    request=PasswordResetSerializer,
+    methods=["POST"]
+)
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def password_reset(request):
@@ -63,11 +76,14 @@ def password_reset(request):
     """
     serializer = PasswordResetSerializer(data=request.data)
     if serializer.is_valid():
-        # Django Mail + pyOTP
-        return Response({"message": "Password reset email sent."}, status=status.HTTP_200_OK)
+        return Response({"message": "Email Found!"}, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(
+    request=PasswordResetConfirmSerializer,
+    methods=["POST"]
+)
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def password_reset_confirm(request):
@@ -77,6 +93,11 @@ def password_reset_confirm(request):
     :return:
     """
     serializer = PasswordResetConfirmSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    user = User.objects.get(email=serializer.validated_data['email'])
+    user.set_password(serializer.validated_data['new_password'])
+    user.save()
+
     if serializer.is_valid():
         return Response({"message": "Password reset successful."}, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -95,6 +116,10 @@ def user_profile(request, username):
     return Response(serializer.data)
 
 
+@extend_schema(
+    request=ProfileSerializer,
+    methods=["PUT"]
+)
 @api_view(['GET', 'PUT'])
 def own_profile(request):
     """
@@ -116,6 +141,10 @@ def own_profile(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(
+    request=BuddySerializer,
+    methods=["POST"]
+)
 @api_view(['POST'])
 def follow_user(request, user_id):
     """

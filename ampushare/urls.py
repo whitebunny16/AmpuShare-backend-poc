@@ -29,7 +29,7 @@ api_urlpatterns = [
     path('user/', include('user.urls')),
 ]
 urlpatterns = [
-                  path('admin', admin.site.urls),
+                  path('admin/', admin.site.urls),
                   path('__debug__/', include(debug_toolbar.urls)),
                   path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
                   path('api/schema/', SpectacularAPIView.as_view(versioning_class=URLPathVersioning), name='schema'),

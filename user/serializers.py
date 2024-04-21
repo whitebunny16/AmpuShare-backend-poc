@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
 from rest_framework import serializers
 
 from user.models import Profile, Buddy, User
@@ -44,7 +45,8 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['user_id', 'first_name', 'last_name', 'email', 'username', 'bio', 'profile_pic', 'date_of_birth', 'gender', 'phone_number', 'created_at', 'updated_at']
+        fields = ['user_id', 'first_name', 'last_name', 'email', 'username', 'bio', 'profile_pic', 'date_of_birth',
+                  'gender', 'phone_number', 'created_at', 'updated_at']
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
@@ -78,26 +80,31 @@ class PasswordResetSerializer(serializers.Serializer):
         return value
 
 
+
 class PasswordResetConfirmSerializer(serializers.Serializer):
+    email = serializers.EmailField()
     new_password = serializers.CharField(style={'input_type': 'password'})
-    token = serializers.CharField()
 
-    def validate(self, attrs):
-        token = attrs.get('token')
-        new_password = attrs.get('new_password')
+    def validate_email(self, value):
+        if not UserModel.objects.filter(email=value).exists():
+            raise serializers.ValidationError(_("No user found with this email address."), code='invalid')
+        return value
 
-        if not token or not new_password:
-            raise serializers.ValidationError(_('Both token and new password are required.'))
-
-        try:
-            user = UserModel.objects.get(**default_token_generator.check_token(token))
-        except UserModel.DoesNotExist:
-            raise serializers.ValidationError(_('Invalid or expired token.'))
-
-        if not default_token_generator.check_token(user, token):
-            raise serializers.ValidationError(_('Invalid or expired token.'))
-
-        return attrs
+    # def validate(self, attrs):
+    #     new_password = attrs.get('new_password')
+    #
+    #     if not token or not new_password:
+    #         raise serializers.ValidationError(_('Both token and new password are required.'))
+    #
+    #     try:
+    #         user = UserModel.objects.get(**default_token_generator.check_token(token))
+    #     except UserModel.DoesNotExist:
+    #         raise serializers.ValidationError(_('Invalid or expired token.'))
+    #
+    #     if not default_token_generator.check_token(user, token):
+    #         raise serializers.ValidationError(_('Invalid or expired token.'))
+    #
+    #     return attrs
 
 
 class BuddySerializer(serializers.ModelSerializer):
