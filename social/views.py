@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -12,6 +13,10 @@ Post View
 """
 
 
+@extend_schema(
+    request=PostSerializer,
+    methods=["POST"]
+)
 @api_view(['GET', 'POST'])
 def posts(request, post_id=None):
     """
@@ -37,6 +42,10 @@ def posts(request, post_id=None):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(
+    request=PostSerializer,
+    methods=["PUT"]
+)
 @api_view(['GET', 'PUT', 'DELETE'])
 def post_detail(request, post_id):
     """
@@ -68,6 +77,10 @@ Like View
 """
 
 
+@extend_schema(
+    request=LikeSerializer,
+    methods=["POST"]
+)
 @api_view(['POST', 'DELETE'])
 def like_post_detail(request, post_id):
     """
@@ -98,6 +111,10 @@ Comment View
 """
 
 
+@extend_schema(
+    request=CommentSerializer,
+    methods=["POST"]
+)
 @api_view(['GET', 'POST'])
 def post_comments(request, post_id):
     """
