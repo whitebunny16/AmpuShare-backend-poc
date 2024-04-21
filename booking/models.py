@@ -42,6 +42,5 @@ class Payment(models.Model):
 
     payment_status = models.CharField(max_length=1, choices=PAYMENT_STATUS_CHOICES)
     appointment = models.ForeignKey(Appointment, on_delete=models.CASCADE)
-    date = models.DateField()
     amount = models.DecimalField(max_digits=7, decimal_places=2)
     payment_method = models.CharField(max_length=1, choices=PAYMENT_METHOD_CHOICES)
