@@ -87,24 +87,29 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
             raise serializers.ValidationError(_("No user found with this email address."), code='invalid')
         return value
 
-    # def validate(self, attrs):
-    #     new_password = attrs.get('new_password')
-    #
-    #     if not token or not new_password:
-    #         raise serializers.ValidationError(_('Both token and new password are required.'))
-    #
-    #     try:
-    #         user = UserModel.objects.get(**default_token_generator.check_token(token))
-    #     except UserModel.DoesNotExist:
-    #         raise serializers.ValidationError(_('Invalid or expired token.'))
-    #
-    #     if not default_token_generator.check_token(user, token):
-    #         raise serializers.ValidationError(_('Invalid or expired token.'))
-    #
-    #     return attrs
+
+class FollowBuddySerializer(serializers.ModelSerializer):
+    profile_pic = serializers.ImageField(source='profile.profile_pic', read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'first_name', 'last_name', 'username', 'profile_pic']
 
 
 class BuddySerializer(serializers.ModelSerializer):
+    follower = FollowBuddySerializer(read_only=True)
+    following = FollowBuddySerializer(read_only=True)
+
     class Meta:
         model = Buddy
-        fields = '__all__'
+        fields = ['id', 'follower', 'following']
+
+    def to_representation(self, instance):
+        self.fields['follower'] = FollowBuddySerializer()
+        self.fields['following'] = FollowBuddySerializer()
+        return super(BuddySerializer, self).to_representation(instance)
+
+    def to_internal_value(self, data):
+        self.fields['follower'] = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+        self.fields['following'] = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+        return super(BuddySerializer, self).to_internal_value(data)
