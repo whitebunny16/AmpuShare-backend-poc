@@ -1,8 +1,6 @@
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.password_validation import validate_password
-from django.contrib.auth.tokens import default_token_generator
 from django.utils.translation import gettext_lazy as _
-from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
 from rest_framework import serializers
 
 from user.models import Profile, Buddy, User
@@ -45,8 +43,8 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['user_id', 'first_name', 'last_name', 'email', 'username', 'bio', 'profile_pic', 'date_of_birth',
-                  'gender', 'phone_number', 'created_at', 'updated_at']
+        fields = ['user_id', 'first_name', 'last_name', 'email', 'username', 'profile_pic', 'date_of_birth',
+                  'gender', 'created_at', 'updated_at']
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
@@ -78,7 +76,6 @@ class PasswordResetSerializer(serializers.Serializer):
         if not UserModel.objects.filter(email=value).exists():
             raise serializers.ValidationError(_("No user found with this email address."), code='invalid')
         return value
-
 
 
 class PasswordResetConfirmSerializer(serializers.Serializer):

@@ -6,6 +6,7 @@ urlpatterns = [
     # Profile
     path('profile', own_profile),
     path('<str:username>/profile', user_profile),
+    path('profiles', get_profiles),
 
     # Buddy
     path('<str:user_id>/follow', follow_user),

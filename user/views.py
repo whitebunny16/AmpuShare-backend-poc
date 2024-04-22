@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
@@ -33,6 +34,8 @@ def user_login(request):
             'access': str(access),
             'refresh': str(refresh),
             'user': {
+                'id': user.id,
+                'email': user.email,
                 'first_name': user.first_name,
                 'last_name': user.last_name,
                 'profile_image': user.profile.profile_pic.url if hasattr(user,
@@ -139,6 +142,24 @@ def own_profile(request):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def get_profiles(request):
+    """
+    Get profiles with search parameters
+    ?search=keyword
+    :param request:
+    :return:
+    """
+    search_query = request.GET.get('search', '')
+    profiles = Profile.objects.filter(
+        Q(user__username__icontains=search_query) |
+        Q(user__first_name__icontains=search_query) |
+        Q(user__last_name__icontains=search_query)
+    )
+    serializer = ProfileSerializer(profiles, many=True)
+    return Response(serializer.data)
 
 
 @extend_schema(

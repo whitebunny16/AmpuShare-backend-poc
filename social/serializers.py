@@ -29,6 +29,11 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = ['id', 'user', 'post', 'text', 'created_at']
 
+    def create(self, validated_data):
+        user_id = self.context['request'].user.id
+        user = User.objects.get(id=user_id)
+        return Comment.objects.create(user=user, **validated_data)
+
 
 class PostSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)

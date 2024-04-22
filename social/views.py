@@ -26,7 +26,8 @@ def posts(request, post_id=None):
     :return:
     """
     if request.method == 'GET':
-        following_users = Buddy.objects.filter(follower=request.user).values_list('following', flat=True)
+        following_users = list(Buddy.objects.filter(follower=request.user).values_list('following', flat=True))
+        following_users.append(request.user.id)  # Add your own user id to the list
 
         # Filter the posts based on the users that the current user follows
         posts = Post.objects.filter(user__in=following_users)
@@ -111,10 +112,10 @@ Comment View
 """
 
 
-@extend_schema(
-    request=CommentSerializer,
-    methods=["POST"]
-)
+# @extend_schema(
+#     request=CommentSerializer,
+#     methods=["POST"]
+# )
 @api_view(['GET', 'POST'])
 def post_comments(request, post_id):
     """
@@ -131,8 +132,17 @@ def post_comments(request, post_id):
         return Response(serializer.data)
 
     elif request.method == 'POST':
+        print("Inside POST")
+
+        print("post_comments", post_id)
+        print("request.user", request.user)
+        print("request.user ID", request.user.id)
+
         comment_data = {'user': request.user.id, 'post': post_id, 'text': request.data.get('text')}
-        serializer = CommentSerializer(data=comment_data)
+
+        print(comment_data)
+
+        serializer = CommentSerializer(data=comment_data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
