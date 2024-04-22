@@ -32,7 +32,7 @@ def posts(request, post_id=None):
         # Filter the posts based on the users that the current user follows
         posts = Post.objects.filter(user__in=following_users)
 
-        serializer = PostSerializer(posts, many=True)
+        serializer = PostSerializer(posts, many=True, context={'request': request})
         return Response(serializer.data)
 
     elif request.method == 'POST':
